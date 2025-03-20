@@ -27,7 +27,7 @@ def save_file_content(file_path, content):
         st.error(f"Erro ao salvar arquivo: {str(e)}")
         return False
 
-def compile_and_run(file_path):
+def compile_and_run(file_path, input_data=None):
     try:
         # Get directory and filename
         dir_path = os.path.dirname(file_path)
@@ -60,12 +60,21 @@ clean:
         if process.returncode != 0:
             return False, f"Erro na compilação:\n{process.stderr}"
 
-        # Run the executable
-        process = subprocess.run([f'./{name_without_ext}'], 
-                              cwd=dir_path,
-                              capture_output=True, 
-                              text=True)
+        # Run the executable with input data if provided
+        if input_data:
+            process = subprocess.run([f'./{name_without_ext}'], 
+                                  cwd=dir_path,
+                                  input=input_data.encode(),
+                                  capture_output=True, 
+                                  text=True)
+        else:
+            process = subprocess.run([f'./{name_without_ext}'], 
+                                  cwd=dir_path,
+                                  capture_output=True, 
+                                  text=True)
 
+        if process.stderr:
+            return False, f"Erro na execução:\n{process.stderr}"
         return True, process.stdout
     except Exception as e:
         return False, f"Erro na execução: {str(e)}"
@@ -114,6 +123,19 @@ if unidade == "U1":
         code_content = read_file_content(selected_file)
         edited_code = st.text_area("Código (você pode editar):", value=code_content, height=400)
 
+        # Área para entrada de dados
+        st.subheader("Entrada de Dados")
+        user_input = st.text_area(
+            "Digite os dados de entrada (um valor por linha):",
+            help="Digite os valores de entrada que seu programa espera receber, um por linha.\n"
+                 "Por exemplo, para uma matriz 2x2 seguida de um vetor de 2 elementos:\n"
+                 "2 2\n"
+                 "1 2\n"
+                 "3 4\n"
+                 "5\n"
+                 "6"
+        )
+
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Salvar Alterações"):
@@ -122,7 +144,7 @@ if unidade == "U1":
 
         with col2:
             if st.button("Compilar e Executar"):
-                success, output = compile_and_run(selected_file)
+                success, output = compile_and_run(selected_file, user_input)
                 if success:
                     st.success("Programa executado com sucesso!")
                     st.code(output)
@@ -151,7 +173,8 @@ with st.sidebar:
     Para executar seu código:
     1. Adicione seu arquivo .c ou .cpp na pasta da unidade (U1, U2, U3)
     2. Selecione o arquivo na interface
-    3. Clique em "Compilar e Executar"
+    3. Digite os dados de entrada necessários
+    4. Clique em "Compilar e Executar"
 
     Se necessário, você pode editar o código diretamente na interface e 
     salvar suas alterações antes de executar.
