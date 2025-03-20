@@ -17,6 +17,16 @@ def read_file_content(file_path):
     except Exception as e:
         return f"Error reading file: {str(e)}"
 
+def save_file_content(file_path, content):
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, 'w') as file:
+            file.write(content)
+        return True
+    except Exception as e:
+        st.error(f"Erro ao salvar arquivo: {str(e)}")
+        return False
+
 def compile_and_run(file_path):
     try:
         # Get directory and filename
@@ -66,46 +76,86 @@ if unidade == "U1":
     # POSIX Threads Section
     st.markdown("### POSIX Threads (pthreads)")
     with st.expander("Hello Threads"):
-        st.code(read_file_content("U1/pthreads/01_hello_threads/hello_threads.c"), language="c")
-        if st.button("Executar Hello Threads"):
-            success, output = compile_and_run("U1/pthreads/01_hello_threads/hello_threads.c")
-            if success:
-                st.success("Programa executado com sucesso!")
-                st.code(output)
-            else:
-                st.error(output)
+        # Editor de código
+        code_content = read_file_content("U1/pthreads/01_hello_threads/hello_threads.c")
+        edited_code = st.text_area("Código (você pode editar):", value=code_content, height=400, key="hello_threads")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Salvar Alterações", key="save_hello"):
+                if save_file_content("U1/pthreads/01_hello_threads/hello_threads.c", edited_code):
+                    st.success("Código salvo com sucesso!")
+
+        with col2:
+            if st.button("Executar Hello Threads"):
+                success, output = compile_and_run("U1/pthreads/01_hello_threads/hello_threads.c")
+                if success:
+                    st.success("Programa executado com sucesso!")
+                    st.code(output)
+                else:
+                    st.error(output)
 
     with st.expander("Mutex Example"):
-        st.code(read_file_content("U1/pthreads/02_mutex/mutex_example.c"), language="c")
-        if st.button("Executar Mutex Example"):
-            success, output = compile_and_run("U1/pthreads/02_mutex/mutex_example.c")
-            if success:
-                st.success("Programa executado com sucesso!")
-                st.code(output)
-            else:
-                st.error(output)
+        # Editor de código
+        code_content = read_file_content("U1/pthreads/02_mutex/mutex_example.c")
+        edited_code = st.text_area("Código (você pode editar):", value=code_content, height=400, key="mutex_example")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Salvar Alterações", key="save_mutex"):
+                if save_file_content("U1/pthreads/02_mutex/mutex_example.c", edited_code):
+                    st.success("Código salvo com sucesso!")
+
+        with col2:
+            if st.button("Executar Mutex Example"):
+                success, output = compile_and_run("U1/pthreads/02_mutex/mutex_example.c")
+                if success:
+                    st.success("Programa executado com sucesso!")
+                    st.code(output)
+                else:
+                    st.error(output)
 
     # OpenMP Section
     st.markdown("### OpenMP")
     with st.expander("Parallel For"):
-        st.code(read_file_content("U1/openmp/01_parallel_for/parallel_for.cpp"), language="cpp")
-        if st.button("Executar Parallel For"):
-            success, output = compile_and_run("U1/openmp/01_parallel_for/parallel_for.cpp")
-            if success:
-                st.success("Programa executado com sucesso!")
-                st.code(output)
-            else:
-                st.error(output)
+        # Editor de código
+        code_content = read_file_content("U1/openmp/01_parallel_for/parallel_for.cpp")
+        edited_code = st.text_area("Código (você pode editar):", value=code_content, height=400, key="parallel_for")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Salvar Alterações", key="save_parallel"):
+                if save_file_content("U1/openmp/01_parallel_for/parallel_for.cpp", edited_code):
+                    st.success("Código salvo com sucesso!")
+
+        with col2:
+            if st.button("Executar Parallel For"):
+                success, output = compile_and_run("U1/openmp/01_parallel_for/parallel_for.cpp")
+                if success:
+                    st.success("Programa executado com sucesso!")
+                    st.code(output)
+                else:
+                    st.error(output)
 
     with st.expander("Sections"):
-        st.code(read_file_content("U1/openmp/02_sections/sections.cpp"), language="cpp")
-        if st.button("Executar Sections"):
-            success, output = compile_and_run("U1/openmp/02_sections/sections.cpp")
-            if success:
-                st.success("Programa executado com sucesso!")
-                st.code(output)
-            else:
-                st.error(output)
+        # Editor de código
+        code_content = read_file_content("U1/openmp/02_sections/sections.cpp")
+        edited_code = st.text_area("Código (você pode editar):", value=code_content, height=400, key="sections")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Salvar Alterações", key="save_sections"):
+                if save_file_content("U1/openmp/02_sections/sections.cpp", edited_code):
+                    st.success("Código salvo com sucesso!")
+
+        with col2:
+            if st.button("Executar Sections"):
+                success, output = compile_and_run("U1/openmp/02_sections/sections.cpp")
+                if success:
+                    st.success("Programa executado com sucesso!")
+                    st.code(output)
+                else:
+                    st.error(output)
 
 elif unidade == "U2":
     st.info("Conteúdo da Unidade 2 será adicionado em breve.")
@@ -126,4 +176,7 @@ with st.sidebar:
     st.markdown("""
     Cada exemplo possui seu próprio Makefile. O botão "Executar" 
     automaticamente compila e executa o programa selecionado.
+
+    Você também pode editar o código diretamente na interface e 
+    salvar suas alterações antes de executar.
     """)
