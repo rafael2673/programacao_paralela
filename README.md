@@ -20,6 +20,6 @@ Cada diretório contém seu próprio Makefile. Para compilar um exemplo:
 1. Navegue até o diretório do exemplo
 2. Execute o comando make
 ```bash
-cd pthreads/01_hello_threads
+cd U1/tarefa1
 make
-./hello_threads
+./multiplication
