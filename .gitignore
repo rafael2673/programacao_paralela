@@ -1,3 +1,5 @@
 ./.replit
 ./.streamlit/config.toml
 ./app.py
+pyproject.toml
+uv.lock
