@@ -1,5 +1,9 @@
-./.replit
-./.streamlit/config.toml
-./app.py
+.replit
+.streamlit/config.toml
+app.py
 pyproject.toml
 uv.lock
+generated-icon.png
+replit.nix
+.pythonlibs
+.upm

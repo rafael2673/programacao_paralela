@@ -1,6 +1,6 @@
 
-contador: contador.cpp
-	g++ -fopenmp -o contador contador.cpp
+contador: contador.c
+	gcc -fopenmp -o contador contador.c -lm
 
 .PHONY: clean
 clean:
