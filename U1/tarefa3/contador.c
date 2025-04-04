@@ -17,7 +17,7 @@ int main() {
 
     gettimeofday(&start, NULL);
     for (int k = 0; k < n; k++) {
-        pi_approx += (k % 2 == 0 ? 1.0 : -1.0) / (2 * k + 1); // Substitui pow(-1, k) por operação mais eficiente
+        pi_approx += (k % 2 == 0 ? 1.0 : -1.0) / (2 * k + 1);
     }
     pi_approx *= 4;
     gettimeofday(&end, NULL);
