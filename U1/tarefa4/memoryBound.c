@@ -3,18 +3,33 @@
 #include <sys/time.h>
 #include <omp.h>
 
-#define SIZE 500000000
+
+#define DEFAULT_SIZE 100000000
+
 float *a, *b, *c;
 
 int main(int argc, char *argv[]) {
-    int threads = argc > 1 ? atoi(argv[1]) : 1;
+    int threads = 1;
+    long size = DEFAULT_SIZE;
+
+    
+    if (argc > 1) threads = atoi(argv[1]);
+    if (argc > 2) size = atol(argv[2]);
+
     omp_set_num_threads(threads);
 
-    a = malloc(SIZE * sizeof(float));
-    b = malloc(SIZE * sizeof(float));
-    c = malloc(SIZE * sizeof(float));
+    printf("Alocando vetores com %ld elementos...\n", size);
 
-    for (long i = 0; i < SIZE; i++) {
+    a = malloc(size * sizeof(float));
+    b = malloc(size * sizeof(float));
+    c = malloc(size * sizeof(float));
+
+    if (a == NULL || b == NULL || c == NULL) {
+        printf("Erro: Falha ao alocar memória.\n");
+        return 1;
+    }
+
+    for (long i = 0; i < size; i++) {
         a[i] = i * 0.5f;
         b[i] = i * 1.5f;
     }
@@ -23,7 +38,7 @@ int main(int argc, char *argv[]) {
     gettimeofday(&start, NULL);
 
     #pragma omp parallel for
-    for (long i = 0; i < SIZE; i++) {
+    for (long i = 0; i < size; i++) {
         c[i] = a[i] + b[i];
     }
 
@@ -31,7 +46,7 @@ int main(int argc, char *argv[]) {
     double elapsed = (end.tv_sec - start.tv_sec) +
                      (end.tv_usec - start.tv_usec) / 1000000.0;
 
-    printf("Memory-bound com %d threads: %.3f segundos\n", threads, elapsed);
+    printf("Memory-bound com %d threads e %ld elementos: %.3f segundos\n", threads, size, elapsed);
 
     free(a); free(b); free(c);
     return 0;
