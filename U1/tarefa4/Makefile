@@ -1,7 +1,7 @@
 
-teste: teste.c
-	gcc -fopenmp -o teste teste.c
+multitaksProgram: multitaksProgram.c
+	gcc -fopenmp -o multitaksProgram multitaksProgram.c
 
 .PHONY: clean
 clean:
-	rm -f teste
+	rm -f multitaksProgram
