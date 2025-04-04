@@ -7,3 +7,5 @@ generated-icon.png
 replit.nix
 .pythonlibs
 .upm
+.ssh_persistente
+configurar_ssh.sh
