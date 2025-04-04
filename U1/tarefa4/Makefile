@@ -1,7 +1,14 @@
 
-multitaksProgram: multitaksProgram.c
-	gcc -fopenmp -o multitaksProgram multitaksProgram.c
+CFLAGS = -fopenmp
+
+memoryBound: memoryBound.c
+	gcc $(CFLAGS) -o memoryBound memoryBound.c
+
+cpuBound: cpuBound.c
+	gcc $(CFLAGS) -lm -o cpuBound cpuBound.c
+
+all: memoryBound cpuBound
 
 .PHONY: clean
 clean:
-	rm -f multitaksProgram
+	rm -f memoryBound cpuBound
