@@ -1,19 +1,23 @@
 #!/bin/bash
 
-VALUE=${1:-100}  # tamanho padrão
+THREADS=(1 2 4 8 16)
+VALUES=(1000000 5000000 10000000 20000000 30000000 40000000 50000000 60000000 80000000 100000000)
+echo "Iniciando testes..." > resultados.txt
 
-echo "Usando tamanho/iterações: $VALUE"
+for VALUE in "${VALUES[@]}"; do
+    echo -e "\nUsando tamanho/iterações: $VALUE\n" | tee -a resultados.txt
 
-echo ""
-echo "Memory-bound:"
-for t in 1 2 4 8 16; do
-  echo -n "$t threads: "
-  ./memoryBound $t $VALUE
-done
+    echo "Memory-bound:" | tee -a resultados.txt
+    for t in "${THREADS[@]}"; do
+        output=$(./memoryBound $t $VALUE)
+        time=$(echo "$output" | grep "segundos" | grep -oP '[0-9]+\.[0-9]+')
+        echo "$t threads: tempo = $time segundos" | tee -a resultados.txt
+    done
 
-echo ""
-echo "CPU-bound:"
-for t in 1 2 4 8 16; do
-  echo -n "$t threads: "
-  ./cpuBound $t $VALUE
+    echo -e "\nCPU-bound:" | tee -a resultados.txt
+    for t in "${THREADS[@]}"; do
+        output=$(./cpuBound $t $VALUE)
+        time=$(echo "$output" | grep "segundos" | grep -oP '[0-9]+\.[0-9]+')
+        echo "$t threads: tempo = $time segundos" | tee -a resultados.txt
+    done
 done

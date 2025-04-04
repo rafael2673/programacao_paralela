@@ -10,13 +10,10 @@ int main(int argc, char *argv[]) {
     int threads = 1;
     long iterations = DEFAULT_ITERATIONS;
 
-    
     if (argc > 1) threads = atoi(argv[1]);
     if (argc > 2) iterations = atol(argv[2]);
 
     omp_set_num_threads(threads);
-
-    printf("Executando CPU-bound com %d threads e %ld iterações...\n", threads, iterations);
 
     double sum = 0.0;
     struct timeval start, end;
@@ -31,6 +28,7 @@ int main(int argc, char *argv[]) {
     double elapsed = (end.tv_sec - start.tv_sec) +
                      (end.tv_usec - start.tv_usec) / 1000000.0;
 
-    printf("CPU-bound com %d threads e %ld iterações: %.3f segundos (soma final = %.2f)\n", threads, iterations, elapsed, sum);
+    printf("CPU-bound com %d threads e %ld iterações: %.3f segundos\n", threads, iterations, elapsed);
+
     return 0;
 }
