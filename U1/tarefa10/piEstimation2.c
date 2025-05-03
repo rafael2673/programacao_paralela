@@ -26,15 +26,13 @@ int main() {
                 local_hits++;
         }
 
-        #pragma omp critical
+        #pragma omp atomic
         inside_circle += local_hits;
     }
 
     gettimeofday(&end, NULL);
-    double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1e6;
     double pi = 4.0 * inside_circle / NUM_POINTS;
-
-    printf("Estimativa de pi (rand versão 1): %.6f\n", pi);
-    printf("Tempo (rand versão 1): %.6f segundos\n", elapsed);
+    double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec)/1e6;
+    printf("Atomic → π = %.6f, tempo = %.3fs\n", pi, elapsed);
     return 0;
 }

@@ -7,34 +7,43 @@
 #define NUM_POINTS 100000000
 
 int main() {
-    int inside_circle = 0;
     struct timeval start, end;
-    unsigned int seed; 
-
     gettimeofday(&start, NULL);
 
-    #pragma omp parallel private(seed)
+    int num_threads;
+    #pragma omp parallel
     {
-        seed = time(NULL) ^ omp_get_thread_num();
-        int local_hits = 0;
+        #pragma omp single
+        num_threads = omp_get_num_threads();
+    }
+
+    int *hits = calloc(num_threads, sizeof(int));
+
+    #pragma omp parallel firstprivate(num_threads)
+    {
+        int tid = omp_get_thread_num();
+        unsigned int seed = time(NULL) ^ tid;
 
         #pragma omp for
         for (int i = 0; i < NUM_POINTS; i++) {
             double x = (double)rand() / RAND_MAX;
             double y = (double)rand() / RAND_MAX;
             if (x * x + y * y <= 1.0)
-                local_hits++;
+                hits[tid]++;
         }
+    }
 
-        #pragma omp critical
-        inside_circle += local_hits;
+    int inside_circle = 0;
+    for (int i = 0; i < num_threads; i++) {
+        inside_circle += hits[i];
     }
 
     gettimeofday(&end, NULL);
     double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1e6;
     double pi = 4.0 * inside_circle / NUM_POINTS;
 
-    printf("Estimativa de pi (rand versão 1): %.6f\n", pi);
-    printf("Tempo (rand versão 1): %.6f segundos\n", elapsed);
+    printf("Estimativa de pi (rand versão 2): %.6f\n", pi);
+    printf("Tempo (rand versão 2): %.6f segundos\n", elapsed);
+    free(hits);
     return 0;
 }
